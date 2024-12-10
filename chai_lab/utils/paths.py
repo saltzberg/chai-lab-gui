@@ -19,6 +19,7 @@ repo_root: Final[Path] = Path(__file__).parents[2].absolute()
 # otherwise we use <repo>/downloads, which is gitignored by default
 downloads_path = repo_root.joinpath("downloads")
 downloads_path = Path(os.environ.get("CHAI_DOWNLOADS_DIR", downloads_path))
+downloads_path = Path("/data/Chai1/downloads/")
 
 
 # minimal sanity check in case we start moving things around

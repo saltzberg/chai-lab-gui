@@ -7,6 +7,7 @@ import math
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
+import json
 
 import numpy as np
 import torch
@@ -236,6 +237,30 @@ def raise_if_msa_too_deep(msa_depth: int):
             f"MSA too deep: {msa_depth} > {MAX_MSA_DEPTH}. "
             "Please limit the MSA depth."
         )
+
+
+def write_scores(ranking_data, output_dir):
+    """Write ranking data to a single JSON file."""
+    all_scores = []
+    for idx, ranking_output in enumerate(ranking_data):
+        scores = get_scores(ranking_output)  # Use the proper get_scores function
+        
+        # Convert numpy arrays to Python native types
+        scores_json = {
+            'model_idx': idx,
+            'aggregate_score': float(scores['aggregate_score']),
+            'ptm': float(scores['ptm']),
+            'iptm': float(scores['iptm']),
+            'per_chain_ptm': scores['per_chain_ptm'].tolist(),
+            'per_chain_pair_iptm': scores['per_chain_pair_iptm'].tolist(),
+            'has_inter_chain_clashes': bool(scores['has_inter_chain_clashes']),
+            'chain_chain_clashes': scores['chain_chain_clashes'].tolist(),
+        }
+        all_scores.append(scores_json)
+    
+    scores_out_path = output_dir.joinpath("scores.json")
+    with open(scores_out_path, 'w') as f:
+        json.dump(all_scores, f, indent=2)
 
 
 # %%
@@ -815,7 +840,7 @@ def run_folding_on_context(
         ## Write output files
         ##
 
-        cif_out_path = output_dir.joinpath(f"pred.model_idx_{idx}.cif")
+        cif_out_path = output_dir.joinpath(f"{output_dir.name}_model_{idx}.cif")
         aggregate_score = ranking_outputs.aggregate_score.item()
         print(f"Score={aggregate_score:.4f}, writing output to {cif_out_path}")
 
@@ -837,6 +862,19 @@ def run_folding_on_context(
         scores_out_path = output_dir.joinpath(f"scores.model_idx_{idx}.npz")
 
         np.savez(scores_out_path, **get_scores(ranking_outputs))
+
+    # Collect ranking data
+    #all_scores = []
+    #for idx, ranking_output in enumerate(ranking_data):
+    #    sample_scores = {
+    #        'model_idx': idx,
+    #        'aggregate_score': ranking_output.aggregate_score.item(),
+    #        'chain_chain_clashes': ranking_output.chain_chain_clashes.squeeze().tolist(),
+    #   }
+    #    all_scores.append(sample_scores)
+
+    # Write all scores to a single JSON file
+    write_scores(ranking_data, output_dir)
 
     return StructureCandidates(
         cif_paths=cif_paths,

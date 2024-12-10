@@ -1,0 +1,56 @@
+{
+  "proteins": [
+    {
+      "name": "CDK2_kinase",
+      "sequence": "MENFQKVEKIGEGTYGVVYKARNKLTGEVVALKKIRLDTETEGVPSTAIREISLLKELNHPNIVKLLDVIHTENKLYLVFEFLHQDLKKFMDASALTGIPLPLIKSYLFQLLQGLAFCHSHRVLHRDLKPQNLLINTEGAIKLADFGLARAFGVPVRTYTHEVVTLWYRAPEILLGCKYYSTAVDIWSLGCIFAEMVTRRALFPGDSEIDQLFRIFRTLGTPDEVVWPGVTSMPDYKPSFPKWARQDFSKVVPPLDEDGRSLLSQMLHYDPNKRISAKAALAHPFFQDVTKPVPHLRL",
+      "description": "Human Cyclin-dependent kinase 2"
+    },
+    {
+      "name": "activation_segment",
+      "sequence": "GLARAFGVPVRTYTHEVVTLWYRAPEILLGCK",
+      "description": "CDK2 activation segment"
+    }
+  ],
+  "ligands": [
+    {
+      "name": "staurosporine",
+      "smiles": "CC1=C2N(C=C3C(=O)C4=C(C=C5C(=CC=C(N5)C=C4)NC3=O)C2=CC=C1)C",
+      "description": "Staurosporine - potent CDK2 inhibitor"
+    }
+  ],
+  "constraints": [
+    {
+      "restraint_id": "binding_site_1",
+      "chainA": "A",
+      "res_idxA": "81",
+      "chainB": "L",
+      "res_idxB": "1",
+      "connection_type": "contact",
+      "confidence": 0.9,
+      "min_distance_angstrom": 3.0,
+      "max_distance_angstrom": 8.0,
+      "comment": "ATP binding site contact"
+    },
+    {
+      "restraint_id": "activation_loop_1",
+      "chainA": "A",
+      "res_idxA": "145",
+      "chainB": "B",
+      "res_idxB": "1",
+      "connection_type": "contact",
+      "confidence": 0.8,
+      "min_distance_angstrom": 5.0,
+      "max_distance_angstrom": 12.0,
+      "comment": "Activation segment contact"
+    }
+  ],
+  "parameters": {
+    "run_name": "cdk2_test",
+    "num_trunk_recycles": 3,
+    "num_diffn_timesteps": 200,
+    "num_diffn_samples": 5,
+    "seed": 42,
+    "gpu": 0,
+    "use_msa_server": false
+  }
+} 

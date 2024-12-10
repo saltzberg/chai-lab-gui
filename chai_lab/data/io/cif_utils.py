@@ -121,7 +121,12 @@ def sequence_to_chem_comps(sequence: list[str], entity_type: int) -> list[ChemCo
     return [_to_chem_component(resi, entity_type) for resi in sequence]
 
 
-def context_to_cif(context: PDBContext, outpath: Path, entity_names: dict[int, str]):
+def context_to_cif(
+    context: PDBContext, 
+    outpath: Path, 
+    entity_names: dict[int, str],
+    entry_id: str | None = None,
+):
     records = get_chains_metadata(context)
 
     entities_map = {}
@@ -193,7 +198,9 @@ def context_to_cif(context: PDBContext, outpath: Path, entity_names: dict[int, s
                     _LocalPLDDT(cif_asym_unit.residue(residue_idx + 1), plddt)
                 )
 
-    system = modelcif.System(title="Chai-1 predicted structure")
+    # Use provided entry_id or default to a generic one
+    title = entry_id if entry_id else "Chai-1 predicted structure"
+    system = modelcif.System(title=title)
     system.authors = ["Chai team"]
     model_group = model.ModelGroup([_model], name="pred")
     system.model_groups.append(model_group)
