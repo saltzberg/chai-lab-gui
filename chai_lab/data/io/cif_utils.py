@@ -215,8 +215,9 @@ def outputs_to_cif(
     write_path: Path,
     entity_names: dict[int, str],
     bfactors: Float[Tensor, "1 n_atoms"] | None = None,
+    entry_id: str | None = None,
 ):
     context = pdb_context_from_batch(output_batch, coords, plddt=bfactors)
     write_path.parent.mkdir(parents=True, exist_ok=True)
-    context_to_cif(context, write_path, entity_names)
+    context_to_cif(context, write_path, entity_names, entry_id=entry_id)
     logger.info(f"saved cif file to {write_path}")

@@ -856,6 +856,7 @@ def run_folding_on_context(
                 c.entity_data.entity_id: c.entity_data.entity_name
                 for c in feature_context.chains
             },
+            entry_id=f"{output_dir.name}_model_{idx}"
         )
         cif_paths.append(cif_out_path)
 
