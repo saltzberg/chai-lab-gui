@@ -199,7 +199,7 @@ def plot_distance_matrix(distance_matrices, output_dir=None):
     sns.heatmap(avg_distance_matrix, 
                 cmap="viridis",
                 vmin=0,
-                vmax=50,
+                vmax=20,
                 square=True)
     plt.title(f"Average Distance Matrix")
     plt.xlabel("Residue Index")
