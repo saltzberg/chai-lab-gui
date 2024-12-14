@@ -1,0 +1,41 @@
+# Start from NVIDIA CUDA base image
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ENV CHAI_DOWNLOADS_DIR="/data/Chai1/downloads"
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    git \
+    build-essential \
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    bash ~/miniconda.sh -b -p /root/miniconda3 && \
+    rm ~/miniconda.sh
+
+# Copy requirements
+COPY requirements.in /tmp/
+RUN conda create -n chai python=3.10 && \
+    conda activate chai && \
+    pip install -r /tmp/requirements.in
+
+# Set up working directory and data directories
+WORKDIR /app
+RUN mkdir -p /data/Chai1/downloads /data/Chai1/output
+
+# Copy the codebase
+COPY . /app/
+
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+source activate chai\n\
+exec "$@"' > /entrypoint.sh && \
+chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
