@@ -1,5 +1,0 @@
-{
-    "parameters.num_trunk_recycles": [2, 3, 4],
-    "parameters.num_diffn_timesteps": [100, 200],
-    "parameters.num_diffn_samples": [3, 5]
-} 
