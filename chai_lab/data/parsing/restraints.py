@@ -132,7 +132,7 @@ class PairwiseInteraction:
 
 def _parse_res_idx(res_idx: str) -> tuple[str, str]:
     """Parse a residue index string.
-
+    
     >>> _parse_res_idx("A219")
     ('A219', '')
     >>> _parse_res_idx("A219@CA")
@@ -140,6 +140,13 @@ def _parse_res_idx(res_idx: str) -> tuple[str, str]:
     >>> _parse_res_idx("@C2")
     ('', 'C2')
     """
+    # Handle NaN or None values
+    if pd.isna(res_idx):
+        return "", ""
+        
+    # Convert to string if not already
+    res_idx = str(res_idx)
+    
     if res_idx.endswith("@"):
         raise ValueError(f"Invalid residue index: {res_idx}")
     parts = res_idx.split("@")
@@ -179,7 +186,8 @@ def parse_pairwise_table(path: Path) -> list[dict]:
     df['min_distance_angstrom'] = df['min_distance_angstrom'].astype(float)
     df['max_distance_angstrom'] = df['max_distance_angstrom'].astype(float)
     
-    return df.to_dict('records')
+    #return df.to_dict('records')
+    return [_parse_row(row) for _, row in df.iterrows()]
 
 
 def write_pairwise_table(interactions: list[PairwiseInteraction], fname: str | Path):

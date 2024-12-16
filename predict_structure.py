@@ -17,6 +17,9 @@ from chai_lab.config import (
     DEFAULT_SEED
 )
 
+# Ensure TMP_DIR exists
+TMP_DIR.mkdir(parents=True, exist_ok=True)
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Run structure prediction with Chai-1')
     parser.add_argument('--input', type=str, required=True,
