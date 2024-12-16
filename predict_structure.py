@@ -53,6 +53,9 @@ def prepare_constraints_file(constraints, run_name):
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for constraint in constraints:
+                # Ensure distances are float
+                constraint['min_distance_angstrom'] = float(constraint['min_distance_angstrom'])
+                constraint['max_distance_angstrom'] = float(constraint['max_distance_angstrom'])
                 writer.writerow(constraint)
     else:
         constraints_path = None

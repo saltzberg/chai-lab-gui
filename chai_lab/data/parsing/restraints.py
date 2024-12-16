@@ -170,20 +170,16 @@ def _parse_row(row: pd.Series) -> PairwiseInteraction:
     )
 
 
-def parse_pairwise_table(table: str | Path) -> list[PairwiseInteraction]:
-    """Parse a table of pairwise interactions."""
-    df = pd.read_csv(table)
-
-    PairwiseConstraintDataframeModel.validate(df, inplace=True)
-
-    # We only have floats and strings; this applies to strings
-    df.update(df.select_dtypes(include=["object"]).fillna(""))
-
-    # Set confidence to 1.0 if not provided
-    df["confidence"] = df["confidence"].fillna(1.0)
-
-    # Parsing
-    return [_parse_row(row) for _, row in df.iterrows()]
+def parse_pairwise_table(path: Path) -> list[dict]:
+    """Parse a CSV file containing pairwise restraints."""
+    import pandas as pd
+    df = pd.read_csv(path)
+    
+    # Convert distance columns to float explicitly
+    df['min_distance_angstrom'] = df['min_distance_angstrom'].astype(float)
+    df['max_distance_angstrom'] = df['max_distance_angstrom'].astype(float)
+    
+    return df.to_dict('records')
 
 
 def write_pairwise_table(interactions: list[PairwiseInteraction], fname: str | Path):
